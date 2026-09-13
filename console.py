@@ -7,6 +7,11 @@ import shlex
 from models import storage
 from models.base_model import BaseModel
 from models.user import User
+from models.state import State
+from models.city import City
+from models.amenity import Amenity
+from models.place import Place
+from models.review import Review
 
 
 class HBNBCommand(cmd.Cmd):
@@ -31,7 +36,12 @@ class HBNBCommand(cmd.Cmd):
         """Return a supported class."""
         classes = {
             "BaseModel": BaseModel,
-            "User": User
+            "User": User,
+            "State": State,
+            "City": City,
+            "Amenity": Amenity,
+            "Place": Place,
+            "Review": Review
         }
         return classes.get(class_name)
 
@@ -109,14 +119,13 @@ class HBNBCommand(cmd.Cmd):
         objects = storage.all()
 
         if args:
-            cls = self._get_class(args[0])
-            if cls is None:
+            if self._get_class(args[0]) is None:
                 print("** class doesn't exist **")
                 return
 
             result = [
                 str(obj) for obj in objects.values()
-                if isinstance(obj, cls)
+                if obj.__class__.__name__ == args[0]
             ]
         else:
             result = [str(obj) for obj in objects.values()]
